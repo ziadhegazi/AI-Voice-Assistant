@@ -30,8 +30,9 @@ voices = engine.getProperty("voices")
 
 print(voices)
 
-engine.setProperty("voice", voices[0].id)
+engine.setProperty("voice", voices[1].id)
 engine.runAndWait()
+engine.setProperty("rate", 170)
 
 def talk(audio):
     engine.say(audio)
@@ -43,43 +44,49 @@ def greeting():
     url = f"https://www.google.com/search?q={search}"
     r = requests.get(url)
     data = BeautifulSoup(r.text, "html.parser")
-    print("data:",data)
+    # print("data:",data)
     temp = (data.find("div", class_="BNeawe").text)
+    temp = temp[:2]
     print("Temp is", temp)
     
     hour = int(datetime.datetime.now().hour)
     if hour >=0 and hour <12:
         talk(("Good morning Sir!"))
         talk(f"The time is {time}")
-        talk(f"The temperature is {search} is {temp}")
+        talk(f"The {search} is {temp} degree celsius")
     
     elif hour >=12 and hour <18:
         talk(("Good afternoon Sir!"))
         talk(f"The time is {time}")
-        talk(f"The temperature is {search} is {temp}")
+        talk(f"The {search} is {temp} degree celsius")
     
     else:
         talk(("Good evening Sir!"))
         talk(f"The time is {time}")
-        talk(f"The {search} is {temp}")
+        talk(f"The {search} is {temp} degree celsius")
         
     talk("")
-    
-greeting()
-    
+        
 def talkcommand():
     r = sr.Recognizer()
-    with sr.Microphone as source:
+    with sr.Microphone() as sources:
         print("Listening...")
         r.pause_threshold = 1
         
-        audio = r.listen(source)
+        audio = r.listen(sources)
     try:
         print("Just a second sir!")
-        command = r.recognize_ibm(audio, language="en-UK")
+        command = r.recognize_ibm(audio, language="en-UK", username="", password="")
         print(f"user said: {command}")
         
     except Exception as e:
         print(f"error is {e}")
         command = "nothing"
-    return
+    return command
+
+if __name__ == "__main__":
+    greeting()
+    while True:
+        command = talkcommand().lower()
+        if "Zed" in command:
+            talk("Hello sir, how may I help you?")
