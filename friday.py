@@ -74,19 +74,26 @@ def talkcommand():
         r.pause_threshold = 1
         
         audio = r.listen(sources)
+
     try:
         print("Just a second sir!")
-        command = r.recognize_ibm(audio, language="en-UK", username="", password="")
+        # command = r.recognize_ibm(audio, language="en-UK", username="ziad Hegazi", password="EZnwuWMlF4F9tY_rMI2clbBlLUqiSheXrYzWzmUeMIbs")
+        command = r.recognize_google(audio, language="en-US")
         print(f"user said: {command}")
         
     except Exception as e:
         print(f"error is {e}")
         command = "nothing"
+    
     return command
 
 if __name__ == "__main__":
-    greeting()
+    # greeting()
     while True:
         command = talkcommand().lower()
-        if "Zed" in command:
+        if "friday" in command:
             talk("Hello sir, how may I help you?")
+            while True:
+                command = talkcommand().lower()
+                if "hello" in command:
+                    talk("Hello sir!")
